@@ -2,8 +2,8 @@ import os
 from twilio.rest import Client
 import cryptocompare
 
-account_sid = "AC0c39ad3fa7fa237e32db910e2a394844"
-auth_token = "af7dfb2151ec4e1795e828cc9b0bdc75"
+account_sid = "INSERT_YOUR_ACCOUNT_SID"
+auth_token = "INSERT_YOUR_AUTH_TOKEN"
 
 client = Client(account_sid, auth_token)
 
