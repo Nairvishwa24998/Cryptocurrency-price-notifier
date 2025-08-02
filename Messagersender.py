@@ -2,8 +2,17 @@ import os
 from twilio.rest import Client
 import cryptocompare
 
-account_sid = "INSERT_YOUR_ACCOUNT_SID"
-auth_token = "INSERT_YOUR_AUTH_TOKEN"
+account_sid = os.getenv("TWILIO_ACCOUNT_SID")
+auth_token = os.getenv("TWILIO_AUTH_TOKEN")
+from_number = os.getenv("TWILIO_FROM_NUMBER")
+to_number = os.getenv("TWILIO_TO_NUMBER")
+
+
+if not all([account_sid, auth_token, from_number, to_number]):
+    raise EnvironmentError(
+        "One or more Twilio environment variables are missing. "
+        "Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, TWILIO_TO_NUMBER."
+    )
 
 client = Client(account_sid, auth_token)
 
@@ -13,7 +22,6 @@ data = cryptocompare.get_coin_list(format=False)
 coinnames = []
 # List of keys(the symbols are the keys here)
 coinsymbols = list(data.keys())
-
 # Empty list to include the names of countries
 currencies = []
 
@@ -32,7 +40,7 @@ while check:
             if cryptosymbol in coinsymbols:
                 check1 = False
                 currprice = cryptocompare.get_price(cryptosymbol, currency= currency)[cryptosymbol][currency]
-                message = client.messages.create(body=f"Current price for {cryptosymbol} in {currency} is {currprice}", from_='+18454426535', to="+919726737274")
+                message = client.messages.create(body=f"Current price for {cryptosymbol} in {currency} is {currprice}", from_= from_number, to= to_number)
                 print(message.sid)
                 check = False
     elif choice.lower()[0].strip() == "n":
@@ -42,11 +50,12 @@ while check:
         cryptoname = cryptoname.replace(cryptoname[0], cryptoname[0].upper())
         cryptosymbol = coinsymbols[coinnames.index(cryptoname)]
         currprice = cryptocompare.get_price(cryptosymbol, currency = currency)[cryptosymbol][currency]
-        message = client.messages.create(body=f"Current price for {cryptosymbol} in {currency} is {currprice}",from_='+18454426535', to="+919726737274")
+        message = client.messages.create(body=f"Current price for {cryptosymbol} in {currency} is {currprice}",from_= from_number, to= to_number)
         print(message.sid)
         check = False
     else:
         print("Invalid entry ")
+
 
 
 
